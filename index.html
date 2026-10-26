@@ -1,0 +1,128 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Text to JSON</title>
+  <style>
+    body {
+      max-width: 700px;
+      margin: 40px auto;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+      background: #f3f5f8;
+      color: #222;
+    }
+    main {
+      background: white;
+      padding: 24px;
+      border-radius: 12px;
+    }
+    textarea, input {
+      box-sizing: border-box;
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0 16px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    textarea { min-height: 140px; }
+    button {
+      padding: 12px 22px;
+      background: #1769e0;
+      color: white;
+      border: 0;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:disabled { opacity: .6; }
+    pre {
+      background: #f0f2f5;
+      padding: 12px;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Text to JSON</h1>
+  <p>Enter text and send it to your public GitHub JSON file.</p>
+
+  <form id="form">
+    <label for="message">Message</label>
+    <textarea id="message" maxlength="5000"
+      required placeholder="Enter your text here"></textarea>
+
+    <label for="password">Write password</label>
+    <input id="password" type="password" required
+      autocomplete="current-password">
+
+    <button id="send" type="submit">Send</button>
+  </form>
+
+  <p id="status" role="status"></p>
+
+  <h2>Latest JSON</h2>
+  <pre id="output">Loading...</pre>
+</main>
+
+<script>
+  const WORKER_URL =
+    "https://text-json-bridge.shibinkodoth1.workers.dev";
+
+  const JSON_URL =
+    "https://raw.githubusercontent.com/YOUR_GITHUB_USERNAME/" +
+    "text-json-bridge/main/current.json";
+
+  const form = document.getElementById("form");
+  const send = document.getElementById("send");
+  const status = document.getElementById("status");
+  const output = document.getElementById("output");
+
+  async function loadJson() {
+    try {
+      const response = await fetch(JSON_URL + "?t=" + Date.now());
+      if (!response.ok) throw new Error("JSON file not available");
+      const data = await response.json();
+      output.textContent = JSON.stringify(data, null, 2);
+    } catch {
+      output.textContent = "Unable to load JSON. Check the repository URL.";
+    }
+  }
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    send.disabled = true;
+    status.textContent = "Sending...";
+
+    try {
+      const response = await fetch(WORKER_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          message: document.getElementById("message").value,
+          password: document.getElementById("password").value
+        })
+      });
+
+      const result = await response.json();
+      if (!response.ok) {
+        throw new Error(result.error || "Submission failed");
+      }
+
+      status.textContent = "Saved to GitHub successfully.";
+      document.getElementById("password").value = "";
+      await loadJson();
+    } catch (error) {
+      status.textContent = "Failed: " + error.message;
+    } finally {
+      send.disabled = false;
+    }
+  });
+
+  loadJson();
+</script>
+</body>
+</html>
