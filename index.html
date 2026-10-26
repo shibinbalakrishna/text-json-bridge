@@ -81,17 +81,24 @@
   const status = document.getElementById("status");
   const output = document.getElementById("output");
 
-  async function loadJson() {
-    try {
-      const response = await fetch(JSON_URL + "?t=" + Date.now());
-      if (!response.ok) throw new Error("JSON file not available");
-      const data = await response.json();
-      output.textContent = JSON.stringify(data, null, 2);
-    } catch {
-      output.textContent = "Unable to load JSON. Check the repository URL.";
-    }
-  }
 
+async function loadJson() {
+  try {
+    const response = await fetch(
+      "https://text-json-bridge.shibinkodoth1.workers.dev/latest"
+    );
+
+    if (!response.ok) {
+      throw new Error("Could not load latest JSON");
+    }
+
+    const data = await response.json();
+    document.getElementById("output").textContent =
+      JSON.stringify(data, null, 2);
+  } catch (error) {
+    document.getElementById("output").textContent = error.message;
+  }
+}
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
     send.disabled = true;
