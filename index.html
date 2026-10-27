@@ -153,10 +153,10 @@
 
     /* Page Layout */
     .sap-page-container {
-      max-width: 780px;
+      max-width: 680px;
       width: 100%;
-      margin: 20px auto 32px;
-      padding: 0 14px;
+      margin: 28px auto 36px;
+      padding: 0 16px;
       flex: 1;
     }
 
@@ -166,17 +166,16 @@
       border-radius: var(--sap-radius);
       box-shadow: var(--sap-shadow);
       overflow: hidden;
-      margin-bottom: 18px;
       border: 1px solid rgba(85, 107, 129, 0.12);
     }
 
     .sap-card-body {
-      padding: 22px;
+      padding: 24px;
     }
 
     /* Form Controls */
     .sap-form-group {
-      margin-bottom: 18px;
+      margin-bottom: 20px;
     }
 
     .sap-label {
@@ -208,7 +207,7 @@
     }
 
     .sap-textarea {
-      min-height: 110px;
+      min-height: 120px;
       resize: vertical;
       line-height: 1.5;
     }
@@ -253,7 +252,6 @@
     .sap-actions {
       display: flex;
       align-items: center;
-      gap: 12px;
       margin-top: 22px;
       padding-top: 18px;
       border-top: 1px solid #edf0f2;
@@ -265,7 +263,7 @@
       justify-content: center;
       gap: 8px;
       min-height: 42px;
-      padding: 0 20px;
+      padding: 0 24px;
       font-size: 14px;
       font-weight: 600;
       border-radius: 6px;
@@ -275,6 +273,7 @@
       outline: none;
       font-family: inherit;
       user-select: none;
+      width: 100%;
     }
 
     .sap-btn:active {
@@ -296,18 +295,6 @@
     .sap-btn-primary:active {
       background: var(--sap-accent-active);
       border-color: var(--sap-accent-active);
-    }
-
-    .sap-btn-secondary {
-      background: #ffffff;
-      border-color: var(--sap-border-input);
-      color: var(--sap-text);
-    }
-
-    .sap-btn-secondary:hover {
-      background: #f7f9fa;
-      border-color: var(--sap-accent);
-      color: var(--sap-accent);
     }
 
     .sap-btn:disabled {
@@ -353,107 +340,12 @@
       color: #084379;
     }
 
-    /* Output Card / Monitor */
-    .sap-monitor-card {
-      background: var(--sap-card-bg);
-      border-radius: var(--sap-radius);
-      box-shadow: var(--sap-shadow);
-      border: 1px solid rgba(85, 107, 129, 0.12);
-      overflow: hidden;
-    }
-
-    .sap-monitor-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 14px 20px;
-      background: #fafbfc;
-      border-bottom: 1px solid #edf0f2;
-    }
-
-    .sap-monitor-title {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--sap-text);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .sap-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 10.5px;
-      font-weight: 600;
-      padding: 2px 7px;
-      border-radius: 4px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      background: var(--sap-accent-light);
-      color: var(--sap-accent);
-      border: 1px solid #b3d8f7;
-    }
-
-    .sap-monitor-body {
-      padding: 18px 20px;
-    }
-
-    .sap-active-state {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .sap-state-row {
-      display: flex;
-      align-items: flex-start;
-      gap: 14px;
-    }
-
-    .sap-state-label {
-      width: 130px;
-      font-size: 11.5px;
-      font-weight: 600;
-      color: var(--sap-text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.4px;
-      padding-top: 4px;
-      flex-shrink: 0;
-    }
-
-    .sap-state-value {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .sap-keyword-display {
-      display: inline-block;
-      max-width: 100%;
-      padding: 8px 12px;
-      border-radius: 6px;
-      background: #f4f6f8;
-      border: 1px solid var(--sap-border);
-      font-family: var(--sap-font-mono);
-      font-size: 13.5px;
-      font-weight: 600;
-      color: #0b4f8c;
-      word-break: break-all;
-      overflow-wrap: anywhere;
-    }
-
-    .sap-timestamp {
-      color: var(--sap-text-muted);
-      font-size: 12px;
-      margin-top: 4px;
-    }
-
     /* Footer */
     .sap-footer {
       text-align: center;
       font-size: 11.5px;
       color: var(--sap-text-muted);
-      padding: 16px 12px 20px;
+      padding: 20px 12px 24px;
     }
 
     @keyframes sapFadeIn {
@@ -466,17 +358,16 @@
        ======================================================== */
     @media (max-width: 680px) {
       .sap-page-container {
-        margin: 12px auto 20px;
+        margin: 14px auto 24px;
         padding: 0 10px;
       }
 
       .sap-card {
         border-radius: 10px;
-        margin-bottom: 14px;
       }
 
       .sap-card-body {
-        padding: 16px 14px;
+        padding: 18px 14px;
       }
 
       /* Fix iOS Safari auto-zoom by setting input font-size to 16px */
@@ -492,50 +383,14 @@
         min-height: 120px;
       }
 
-      /* Stack Buttons Vertically for Large Mobile Touch Targets */
       .sap-actions {
-        flex-direction: column;
-        gap: 10px;
         margin-top: 18px;
         padding-top: 14px;
       }
 
       .sap-btn {
-        width: 100%;
         min-height: 46px;
         font-size: 15px;
-        border-radius: 8px;
-      }
-
-      /* Monitor Card layout on Mobile */
-      .sap-monitor-card {
-        border-radius: 10px;
-      }
-
-      .sap-monitor-head {
-        padding: 12px 14px;
-      }
-
-      .sap-monitor-body {
-        padding: 14px;
-      }
-
-      .sap-state-row {
-        flex-direction: column;
-        gap: 4px;
-      }
-
-      .sap-state-label {
-        width: 100%;
-        font-size: 11px;
-        padding-top: 0;
-      }
-
-      .sap-keyword-display {
-        width: 100%;
-        box-sizing: border-box;
-        font-size: 13px;
-        padding: 10px 12px;
         border-radius: 8px;
       }
     }
@@ -589,6 +444,7 @@
               class="sap-textarea"
               maxlength="5000"
               required
+              placeholder="Enter script trigger keyword (e.g. run-backup, restart-worker)"
             ></textarea>
             <div class="sap-hint">
               <span class="sap-hint-icon">i</span>
@@ -619,43 +475,12 @@
             <button id="send" class="sap-btn sap-btn-primary" type="submit">
               <span>Execute Trigger</span>
             </button>
-            <button id="refreshBtn" class="sap-btn sap-btn-secondary" type="button">
-              <span>Refresh Status</span>
-            </button>
           </div>
         </form>
 
         <div id="statusStrip" class="sap-message-strip" role="status" aria-live="polite">
           <span id="statusIcon"></span>
           <span id="statusText"></span>
-        </div>
-      </div>
-    </section>
-
-    <!-- Active Trigger Status Panel -->
-    <section class="sap-monitor-card">
-      <div class="sap-monitor-head">
-        <div class="sap-monitor-title">
-          <span>Active Trigger State</span>
-          <span class="sap-tag">Live Status</span>
-        </div>
-        <span id="syncIndicator" class="sap-timestamp">Synced</span>
-      </div>
-
-      <div class="sap-monitor-body">
-        <div class="sap-active-state">
-          <div class="sap-state-row">
-            <div class="sap-state-label">Current Keyword</div>
-            <div class="sap-state-value">
-              <span id="outputKeyword" class="sap-keyword-display">Connecting to gateway...</span>
-            </div>
-          </div>
-          <div class="sap-state-row">
-            <div class="sap-state-label">Last Synchronized</div>
-            <div class="sap-state-value">
-              <div id="outputTime" class="sap-timestamp">—</div>
-            </div>
-          </div>
         </div>
       </div>
     </section>
@@ -674,13 +499,9 @@
     const messageInput = document.getElementById("message");
     const passwordInput = document.getElementById("password");
     const sendButton = document.getElementById("send");
-    const refreshBtn = document.getElementById("refreshBtn");
     const statusStrip = document.getElementById("statusStrip");
     const statusText = document.getElementById("statusText");
     const statusIcon = document.getElementById("statusIcon");
-    const outputKeyword = document.getElementById("outputKeyword");
-    const outputTime = document.getElementById("outputTime");
-    const syncIndicator = document.getElementById("syncIndicator");
 
     function setStatus(text, type) {
       if (!text) {
@@ -691,30 +512,6 @@
       statusStrip.className = `sap-message-strip visible ${type}`;
       statusText.textContent = text;
       statusIcon.textContent = type === "success" ? "✓" : (type === "error" ? "⚠" : "ℹ");
-    }
-
-    async function loadStatus() {
-      syncIndicator.textContent = "Checking...";
-      try {
-        const response = await fetch(`${WORKER_URL}/latest`, { cache: "no-store" });
-
-        if (!response.ok) {
-          throw new Error("Unable to retrieve current trigger status.");
-        }
-
-        const data = await response.json();
-        const activeText = data && typeof data.message === "string" 
-          ? data.message 
-          : (data && data.text ? data.text : "No trigger keyword currently set.");
-
-        outputKeyword.textContent = activeText || "(empty)";
-        outputTime.textContent = new Date().toLocaleTimeString();
-        syncIndicator.textContent = "Synchronized";
-      } catch (err) {
-        outputKeyword.textContent = "Unable to connect to trigger gateway.";
-        outputTime.textContent = "Offline";
-        syncIndicator.textContent = "Connection error";
-      }
     }
 
     form.addEventListener("submit", async (event) => {
@@ -749,20 +546,12 @@
         setStatus("Trigger command dispatched and saved successfully.", "success");
         messageInput.value = "";
         passwordInput.value = "";
-
-        await loadStatus();
       } catch (error) {
         setStatus(error.message || "Execution dispatch failed. Please verify your connection.", "error");
       } finally {
         sendButton.disabled = false;
       }
     });
-
-    refreshBtn.addEventListener("click", () => {
-      loadStatus();
-    });
-
-    loadStatus();
   </script>
 </body>
 </html>
