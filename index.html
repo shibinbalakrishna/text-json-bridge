@@ -1,184 +1,768 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="referrer" content="no-referrer">
-  <title>Text to JSON</title>
+  <meta name="theme-color" content="#354a5f">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Script Trigger Hub | SAP Fiori</title>
 
   <style>
-    body {
-      max-width: 700px;
-      margin: 40px auto;
-      padding: 20px;
-      font-family: Arial, sans-serif;
-      background: #f3f5f8;
-      color: #222;
+    /* SAP Fiori (Quartz / Horizon) Mobile-Optimized Theme */
+    :root {
+      --sap-shell: #354a5f;
+      --sap-shell-hover: #2c3e50;
+      --sap-bg: #f5f6f8;
+      --sap-card-bg: #ffffff;
+      --sap-text: #32363a;
+      --sap-text-muted: #6a6d70;
+      --sap-text-secondary: #556b82;
+      --sap-border: #d9d9d9;
+      --sap-border-input: #89919a;
+      --sap-accent: #0a6ed1;
+      --sap-accent-hover: #0854a0;
+      --sap-accent-active: #06407a;
+      --sap-accent-light: #ebf5fe;
+      --sap-success: #107e3e;
+      --sap-success-bg: #f1fdf6;
+      --sap-success-border: #bfe6cd;
+      --sap-error: #bb0000;
+      --sap-error-bg: #ffebeb;
+      --sap-error-border: #f3b4b4;
+      --sap-radius: 8px;
+      --sap-font: "72", "72full", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      --sap-font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      --sap-shadow: 0 0 0 1px rgba(85, 107, 129, 0.16), 0 3px 12px rgba(0, 0, 0, 0.06);
     }
 
-    main {
-      background: white;
-      padding: 24px;
-      border-radius: 12px;
-    }
-
-    textarea, input {
+    * {
       box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
       width: 100%;
-      padding: 12px;
-      margin: 8px 0 16px;
-      border: 1px solid #ccc;
+      min-height: 100%;
+      overflow-x: hidden;
+    }
+
+    body {
+      font-family: var(--sap-font);
+      background-color: var(--sap-bg);
+      color: var(--sap-text);
+      font-size: 14px;
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding-bottom: env(safe-area-inset-bottom, 12px);
+    }
+
+    /* SAP Shell Bar */
+    .sap-shellbar {
+      min-height: 48px;
+      height: calc(48px + env(safe-area-inset-top, 0px));
+      background: var(--sap-shell);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: env(safe-area-inset-top, 0px);
+      padding-left: max(16px, env(safe-area-inset-left, 16px));
+      padding-right: max(16px, env(safe-area-inset-right, 16px));
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.22);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .sap-shellbar-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .sap-logo {
+      display: inline-grid;
+      place-items: center;
+      width: 30px;
+      height: 30px;
       border-radius: 6px;
+      background: var(--sap-accent);
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 12px;
+      letter-spacing: 0.5px;
+      flex-shrink: 0;
     }
 
-    textarea {
-      min-height: 140px;
+    .sap-shellbar-title {
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .sap-shellbar-badge {
+      font-size: 10px;
+      text-transform: uppercase;
+      background: rgba(255, 255, 255, 0.15);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      flex-shrink: 0;
+    }
+
+    .sap-shellbar-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .sap-status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11.5px;
+      background: rgba(16, 126, 62, 0.22);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: #92e0ab;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .sap-status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #55db88;
+      box-shadow: 0 0 6px #55db88;
+      flex-shrink: 0;
+    }
+
+    /* Page Layout */
+    .sap-page-container {
+      max-width: 780px;
+      width: 100%;
+      margin: 20px auto 32px;
+      padding: 0 14px;
+      flex: 1;
+    }
+
+    /* SAP Object Card */
+    .sap-card {
+      background: var(--sap-card-bg);
+      border-radius: var(--sap-radius);
+      box-shadow: var(--sap-shadow);
+      overflow: hidden;
+      margin-bottom: 18px;
+      border: 1px solid rgba(85, 107, 129, 0.12);
+    }
+
+    .sap-card-body {
+      padding: 22px;
+    }
+
+    /* Form Controls */
+    .sap-form-group {
+      margin-bottom: 18px;
+    }
+
+    .sap-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--sap-text-secondary);
+      margin-bottom: 6px;
+    }
+
+    .sap-label .sap-required {
+      color: var(--sap-error);
+      margin-left: 2px;
+    }
+
+    .sap-input,
+    .sap-textarea {
+      width: 100%;
+      font-family: inherit;
+      font-size: 14px;
+      color: var(--sap-text);
+      background: #ffffff;
+      border: 1px solid var(--sap-border-input);
+      border-radius: 6px;
+      padding: 10px 12px;
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+      min-height: 42px;
+    }
+
+    .sap-textarea {
+      min-height: 110px;
       resize: vertical;
+      line-height: 1.5;
     }
 
-    button {
-      padding: 12px 22px;
-      background: #1769e0;
-      color: white;
-      border: 0;
+    .sap-input:hover,
+    .sap-textarea:hover {
+      border-color: var(--sap-accent);
+    }
+
+    .sap-input:focus,
+    .sap-textarea:focus {
+      border-color: var(--sap-accent);
+      box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px var(--sap-accent);
+    }
+
+    .sap-hint {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+      color: var(--sap-text-muted);
+      font-size: 12px;
+      margin-top: 6px;
+      line-height: 1.4;
+    }
+
+    .sap-hint-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--sap-border);
+      color: #ffffff;
+      font-size: 10px;
+      font-weight: bold;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* Buttons */
+    .sap-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 22px;
+      padding-top: 18px;
+      border-top: 1px solid #edf0f2;
+    }
+
+    .sap-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 42px;
+      padding: 0 20px;
+      font-size: 14px;
+      font-weight: 600;
       border-radius: 6px;
       cursor: pointer;
+      transition: background-color 0.12s, border-color 0.12s, box-shadow 0.12s, transform 0.08s;
+      border: 1px solid transparent;
+      outline: none;
+      font-family: inherit;
+      user-select: none;
     }
 
-    button:disabled {
-      opacity: .6;
-      cursor: wait;
+    .sap-btn:active {
+      transform: scale(0.985);
     }
 
-    pre {
-      background: #f0f2f5;
-      padding: 12px;
-      white-space: pre-wrap;
+    .sap-btn-primary {
+      background: var(--sap-accent);
+      border-color: var(--sap-accent);
+      color: #ffffff;
+      box-shadow: 0 1px 3px rgba(10, 110, 209, 0.25);
+    }
+
+    .sap-btn-primary:hover {
+      background: var(--sap-accent-hover);
+      border-color: var(--sap-accent-hover);
+    }
+
+    .sap-btn-primary:active {
+      background: var(--sap-accent-active);
+      border-color: var(--sap-accent-active);
+    }
+
+    .sap-btn-secondary {
+      background: #ffffff;
+      border-color: var(--sap-border-input);
+      color: var(--sap-text);
+    }
+
+    .sap-btn-secondary:hover {
+      background: #f7f9fa;
+      border-color: var(--sap-accent);
+      color: var(--sap-accent);
+    }
+
+    .sap-btn:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      box-shadow: none;
+      transform: none;
+    }
+
+    /* SAP Message Strip */
+    .sap-message-strip {
+      display: none;
+      margin-top: 16px;
+      padding: 12px 14px;
+      border-radius: 6px;
+      font-size: 13px;
+      align-items: flex-start;
+      gap: 10px;
+      border-left: 4px solid;
+      line-height: 1.4;
+      animation: sapFadeIn 0.2s ease-out;
+    }
+
+    .sap-message-strip.visible {
+      display: flex;
+    }
+
+    .sap-message-strip.success {
+      background: var(--sap-success-bg);
+      border-color: var(--sap-success);
+      color: #0b572a;
+    }
+
+    .sap-message-strip.error {
+      background: var(--sap-error-bg);
+      border-color: var(--sap-error);
+      color: #8c0000;
+    }
+
+    .sap-message-strip.info {
+      background: var(--sap-accent-light);
+      border-color: var(--sap-accent);
+      color: #084379;
+    }
+
+    /* Output Card / Monitor */
+    .sap-monitor-card {
+      background: var(--sap-card-bg);
+      border-radius: var(--sap-radius);
+      box-shadow: var(--sap-shadow);
+      border: 1px solid rgba(85, 107, 129, 0.12);
+      overflow: hidden;
+    }
+
+    .sap-monitor-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+      background: #fafbfc;
+      border-bottom: 1px solid #edf0f2;
+    }
+
+    .sap-monitor-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--sap-text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .sap-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10.5px;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      background: var(--sap-accent-light);
+      color: var(--sap-accent);
+      border: 1px solid #b3d8f7;
+    }
+
+    .sap-monitor-body {
+      padding: 18px 20px;
+    }
+
+    .sap-active-state {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .sap-state-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+
+    .sap-state-label {
+      width: 130px;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--sap-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      padding-top: 4px;
+      flex-shrink: 0;
+    }
+
+    .sap-state-value {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .sap-keyword-display {
+      display: inline-block;
+      max-width: 100%;
+      padding: 8px 12px;
+      border-radius: 6px;
+      background: #f4f6f8;
+      border: 1px solid var(--sap-border);
+      font-family: var(--sap-font-mono);
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #0b4f8c;
+      word-break: break-all;
       overflow-wrap: anywhere;
     }
 
-    .hint {
-      color: #555;
-      font-size: .9rem;
+    .sap-timestamp {
+      color: var(--sap-text-muted);
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    /* Footer */
+    .sap-footer {
+      text-align: center;
+      font-size: 11.5px;
+      color: var(--sap-text-muted);
+      padding: 16px 12px 20px;
+    }
+
+    @keyframes sapFadeIn {
+      from { opacity: 0; transform: translateY(-4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ========================================================
+       MOBILE OPTIMIZATION (Tablets & Phones <= 680px)
+       ======================================================== */
+    @media (max-width: 680px) {
+      .sap-page-container {
+        margin: 12px auto 20px;
+        padding: 0 10px;
+      }
+
+      .sap-card {
+        border-radius: 10px;
+        margin-bottom: 14px;
+      }
+
+      .sap-card-body {
+        padding: 16px 14px;
+      }
+
+      /* Fix iOS Safari auto-zoom by setting input font-size to 16px */
+      .sap-input,
+      .sap-textarea {
+        font-size: 16px;
+        padding: 10px 12px;
+        min-height: 44px;
+        border-radius: 8px;
+      }
+
+      .sap-textarea {
+        min-height: 120px;
+      }
+
+      /* Stack Buttons Vertically for Large Mobile Touch Targets */
+      .sap-actions {
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 18px;
+        padding-top: 14px;
+      }
+
+      .sap-btn {
+        width: 100%;
+        min-height: 46px;
+        font-size: 15px;
+        border-radius: 8px;
+      }
+
+      /* Monitor Card layout on Mobile */
+      .sap-monitor-card {
+        border-radius: 10px;
+      }
+
+      .sap-monitor-head {
+        padding: 12px 14px;
+      }
+
+      .sap-monitor-body {
+        padding: 14px;
+      }
+
+      .sap-state-row {
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .sap-state-label {
+        width: 100%;
+        font-size: 11px;
+        padding-top: 0;
+      }
+
+      .sap-keyword-display {
+        width: 100%;
+        box-sizing: border-box;
+        font-size: 13px;
+        padding: 10px 12px;
+        border-radius: 8px;
+      }
+    }
+
+    /* Extra Small Screen Optimization (Phones <= 380px) */
+    @media (max-width: 380px) {
+      .sap-shellbar {
+        padding-left: 10px;
+        padding-right: 10px;
+      }
+
+      .sap-shellbar-badge {
+        display: none;
+      }
+
+      .sap-status-pill {
+        font-size: 11px;
+        padding: 2px 6px;
+      }
     }
   </style>
 </head>
 
 <body>
-<main>
-  <h1>Text to JSON</h1>
-  <p>Enter your text and submit it to update the JSON file.</p>
+  <!-- SAP Shell Bar -->
+  <header class="sap-shellbar">
+    <div class="sap-shellbar-left">
+      <span class="sap-logo">TH</span>
+      <span class="sap-shellbar-title">Script Trigger Hub</span>
+      <span class="sap-shellbar-badge">Fiori</span>
+    </div>
+    <div class="sap-shellbar-right">
+      <span class="sap-status-pill">
+        <span class="sap-status-dot"></span>
+        Gateway Online
+      </span>
+    </div>
+  </header>
 
-  <form id="form">
-    <label for="message">Message</label>
-    <textarea
-      id="message"
-      maxlength="5000"
-      required
-      placeholder="Enter your text here"
-    ></textarea>
+  <!-- Page Body -->
+  <main class="sap-page-container">
+    <section class="sap-card">
+      <div class="sap-card-body">
+        <form id="form">
+          <div class="sap-form-group">
+            <label class="sap-label" for="message">
+              Trigger Command / Keyword <span class="sap-required">*</span>
+            </label>
+            <textarea
+              id="message"
+              class="sap-textarea"
+              maxlength="5000"
+              required
+            ></textarea>
+            <div class="sap-hint">
+              <span class="sap-hint-icon">i</span>
+              <span>Must match a registered program keyword on the destination system.</span>
+            </div>
+          </div>
 
-    <label for="password">Write password</label>
-    <input
-      id="password"
-      type="password"
-      maxlength="256"
-      autocomplete="current-password"
-      required
-    >
+          <div class="sap-form-group">
+            <label class="sap-label" for="password">
+              Authorization Key <span class="sap-required">*</span>
+            </label>
+            <input
+              id="password"
+              class="sap-input"
+              type="password"
+              maxlength="256"
+              autocomplete="current-password"
+              required
+              placeholder="Enter execution authorization key"
+            >
+            <div class="sap-hint">
+              <span class="sap-hint-icon">!</span>
+              <span>Only authorized credentials will be processed by the bridge service.</span>
+            </div>
+          </div>
 
-    <p class="hint">
-      Use only information that is safe to publish publicly.
-    </p>
+          <div class="sap-actions">
+            <button id="send" class="sap-btn sap-btn-primary" type="submit">
+              <span>Execute Trigger</span>
+            </button>
+            <button id="refreshBtn" class="sap-btn sap-btn-secondary" type="button">
+              <span>Refresh Status</span>
+            </button>
+          </div>
+        </form>
 
-    <button id="send" type="submit">Send</button>
-  </form>
+        <div id="statusStrip" class="sap-message-strip" role="status" aria-live="polite">
+          <span id="statusIcon"></span>
+          <span id="statusText"></span>
+        </div>
+      </div>
+    </section>
 
-  <p id="status" role="status" aria-live="polite"></p>
+    <!-- Active Trigger Status Panel -->
+    <section class="sap-monitor-card">
+      <div class="sap-monitor-head">
+        <div class="sap-monitor-title">
+          <span>Active Trigger State</span>
+          <span class="sap-tag">Live Status</span>
+        </div>
+        <span id="syncIndicator" class="sap-timestamp">Synced</span>
+      </div>
 
-  <h2>Latest JSON</h2>
-  <pre id="output">Loading...</pre>
-</main>
+      <div class="sap-monitor-body">
+        <div class="sap-active-state">
+          <div class="sap-state-row">
+            <div class="sap-state-label">Current Keyword</div>
+            <div class="sap-state-value">
+              <span id="outputKeyword" class="sap-keyword-display">Connecting to gateway...</span>
+            </div>
+          </div>
+          <div class="sap-state-row">
+            <div class="sap-state-label">Last Synchronized</div>
+            <div class="sap-state-value">
+              <div id="outputTime" class="sap-timestamp">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-<script>
-  "use strict";
+    <footer class="sap-footer">
+      <span>Script Trigger Hub &bull; Enterprise Fiori Edition</span>
+    </footer>
+  </main>
 
-  const WORKER_URL =
-    "https://text-json-bridge.shibinkodoth1.workers.dev";
+  <script>
+    "use strict";
 
-  const form = document.getElementById("form");
-  const messageInput = document.getElementById("message");
-  const passwordInput = document.getElementById("password");
-  const sendButton = document.getElementById("send");
-  const status = document.getElementById("status");
-  const output = document.getElementById("output");
+    const WORKER_URL = "https://text-json-bridge.shibinkodoth1.workers.dev";
 
-  async function loadJson() {
-    try {
-      const response = await fetch(
-        `${WORKER_URL}/latest`,
-        { cache: "no-store" }
-      );
+    const form = document.getElementById("form");
+    const messageInput = document.getElementById("message");
+    const passwordInput = document.getElementById("password");
+    const sendButton = document.getElementById("send");
+    const refreshBtn = document.getElementById("refreshBtn");
+    const statusStrip = document.getElementById("statusStrip");
+    const statusText = document.getElementById("statusText");
+    const statusIcon = document.getElementById("statusIcon");
+    const outputKeyword = document.getElementById("outputKeyword");
+    const outputTime = document.getElementById("outputTime");
+    const syncIndicator = document.getElementById("syncIndicator");
 
-      if (!response.ok) {
-        throw new Error("Unable to load the latest JSON.");
+    function setStatus(text, type) {
+      if (!text) {
+        statusStrip.className = "sap-message-strip";
+        statusText.textContent = "";
+        return;
+      }
+      statusStrip.className = `sap-message-strip visible ${type}`;
+      statusText.textContent = text;
+      statusIcon.textContent = type === "success" ? "✓" : (type === "error" ? "⚠" : "ℹ");
+    }
+
+    async function loadStatus() {
+      syncIndicator.textContent = "Checking...";
+      try {
+        const response = await fetch(`${WORKER_URL}/latest`, { cache: "no-store" });
+
+        if (!response.ok) {
+          throw new Error("Unable to retrieve current trigger status.");
+        }
+
+        const data = await response.json();
+        const activeText = data && typeof data.message === "string" 
+          ? data.message 
+          : (data && data.text ? data.text : "No trigger keyword currently set.");
+
+        outputKeyword.textContent = activeText || "(empty)";
+        outputTime.textContent = new Date().toLocaleTimeString();
+        syncIndicator.textContent = "Synchronized";
+      } catch (err) {
+        outputKeyword.textContent = "Unable to connect to trigger gateway.";
+        outputTime.textContent = "Offline";
+        syncIndicator.textContent = "Connection error";
+      }
+    }
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const message = messageInput.value.trim();
+      const password = passwordInput.value;
+
+      if (!message || message.length > 5000 || !password) {
+        setStatus("Please specify both a trigger keyword and the authorization key.", "error");
+        return;
       }
 
-      const data = await response.json();
+      sendButton.disabled = true;
+      setStatus("Submitting trigger command to gateway...", "info");
 
-      // Use textContent so JSON content is not interpreted as HTML.
-      output.textContent = JSON.stringify(data, null, 2);
-    } catch {
-      output.textContent = "Could not load the latest JSON.";
-    }
-  }
+      try {
+        const response = await fetch(WORKER_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ message, password })
+        });
 
-  form.addEventListener("submit", async (event) => {
-    event.preventDefault();
+        const result = await response.json();
 
-    const message = messageInput.value.trim();
-    const password = passwordInput.value;
+        if (!response.ok || !result.success) {
+          throw new Error(result.error || "Submission rejected by gateway. Verify credentials.");
+        }
 
-    if (!message || message.length > 5000 || !password) {
-      status.textContent = "Enter a message and your write password.";
-      return;
-    }
+        setStatus("Trigger command dispatched and saved successfully.", "success");
+        messageInput.value = "";
+        passwordInput.value = "";
 
-    sendButton.disabled = true;
-    status.textContent = "Submitting...";
-
-    try {
-      const response = await fetch(WORKER_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ message, password })
-      });
-
-      const result = await response.json();
-
-      if (!response.ok || !result.success) {
-        throw new Error(
-          result.error || "Submission failed. Please try again."
-        );
+        await loadStatus();
+      } catch (error) {
+        setStatus(error.message || "Execution dispatch failed. Please verify your connection.", "error");
+      } finally {
+        sendButton.disabled = false;
       }
+    });
 
-      status.textContent = "Saved successfully.";
-      messageInput.value = "";
-      passwordInput.value = "";
+    refreshBtn.addEventListener("click", () => {
+      loadStatus();
+    });
 
-      await loadJson();
-    } catch {
-      status.textContent =
-        "Submission failed. Check your connection and try again.";
-    } finally {
-      sendButton.disabled = false;
-    }
-  });
-
-  loadJson();
-</script>
+    loadStatus();
+  </script>
 </body>
 </html>
